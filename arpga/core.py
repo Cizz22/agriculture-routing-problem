@@ -48,12 +48,24 @@ def fitness(chromosome, radius, width):
 
 def mate(father, mother):
     '''Crossover'''
+    # # Return the father if the father or mother is empty
+    # if np.all(father == 0):
+    #     father = mutate(mother)
+    # if np.all(mother == 0):
+    #     mother = mutate(father)
+        
+    # #if both are empty
+    # if np.all(father == 0) and np.all(mother == 0):
+    #     # create a random chromosome
+    #     father = np.random.permutation(len(father))
+    #     mother = np.random.permutation(len(mother))
+        
 
     # Randomly select a crossover point, make sure that crossover point is not the first or the last track and the crossover point is not the same
     crossover_point = np.sort(np.random.choice(
         len(father)-1, 2, replace=False)+1)
 
-    # Create offspring
+   # Create offspring
     offspring = np.zeros((2, len(father)))
 
     # Create 2 segments from father and mother
@@ -62,12 +74,17 @@ def mate(father, mother):
     offspring[1, crossover_point[0]:crossover_point[1]
               ] = mother[crossover_point[0]:crossover_point[1]]
 
-    for i in range(len(father)):
-        if mother[i] not in offspring[0]:
-            offspring[0, i] = mother[i]
-    for i in range(len(mother)):
-        if father[i] not in offspring[1]:
-            offspring[1, i] = father[i]
+    # Fill the rest of the offspring with the remaining tracks from mother and father
+    restm = np.setdiff1d(
+        mother, offspring[0, crossover_point[0]:crossover_point[1]], assume_unique=True)
+    restf = np.setdiff1d(
+        father, offspring[1, crossover_point[0]:crossover_point[1]], assume_unique=True)
+
+    offspring[0, :crossover_point[0]] = restm[:crossover_point[0]]
+    offspring[0, crossover_point[1]:] = restm[crossover_point[0]:]
+
+    offspring[1, :crossover_point[0]] = restf[:crossover_point[0]]
+    offspring[1, crossover_point[1]:] = restf[crossover_point[0]:]
 
     return offspring
 
@@ -78,7 +95,7 @@ def mutate(chromosome):
     # Randomly select a mutation point
     mutation_point = np.random.choice(len(chromosome), 2, replace=False)
 
-    prob = np.random.randint(1, 3)
+    prob = np.random.randint(1, 4)
 
     # Flip the mutation point in k == 1
     if prob == 1:
@@ -89,6 +106,10 @@ def mutate(chromosome):
     elif prob == 2:
         chromosome[mutation_point[0]], chromosome[mutation_point[1]
                                                   ] = chromosome[mutation_point[1]], chromosome[mutation_point[0]]
+
+    # slide the mutation point in k == 3
+    elif prob == 3:
+        chromosome = np.roll(chromosome, np.random.randint(1, len(chromosome)))
 
     return chromosome
 
@@ -111,14 +132,18 @@ def new_generation(population, fitness, pSize):
     cummulative_pf = np.cumsum(probability_fitness)
 
     # Perform crossover and mutation to the rest of the population
-    for i in range(int(pSize*0.1), pSize-1):
+    for i in range(int(pSize*0.1), pSize-1, 2):
         if np.random.rand() < 0.7:
 
-            indexf, indexm = sorted_fitness[np.random.choice(
-                pSize, 2, replace=False)]
+            indexf = np.where(cummulative_pf >= np.random.rand())[0][0]
+            indexm = np.where(cummulative_pf >= np.random.rand())[0][0]
 
             father = population[indexf, :]
             mother = population[indexm, :]
+            
+            if np.all(father == 0) or np.all(mother == 0):
+                # stop the loop if both are empty
+                continue
 
             offspring = mate(father, mother)
             new_gen[i, :] = offspring[0, :]

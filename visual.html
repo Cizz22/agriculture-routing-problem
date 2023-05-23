@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+
+    <script>
+        // Track configuration
+        const trackCount = 5;  // Number of tracks
+        const trackWidth = 50;  // Width of each track
+        const lineWidth = 3;  // Width of the route line
+
+        // Solution (example)
+        const solution = [2, 3, 4, 1, 5];  // Track route
+
+        // Get the canvas element
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Calculate the width of each segment
+        const segmentWidth = canvas.width / trackCount;
+
+        // Draw the tracks
+        for (let i = 0; i < trackCount; i++) {
+            const x = i * segmentWidth + segmentWidth / 2;
+            ctx.beginPath();
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, canvas.height);
+            ctx.lineWidth = trackWidth;
+            ctx.stroke();
+        }
+
+        // Draw the track route
+        ctx.beginPath();
+        ctx.moveTo(segmentWidth / 2, 0);
+        for (let i = 0; i < solution.length; i++) {
+            const trackIndex = solution[i] - 1;
+            const x = trackIndex * segmentWidth + segmentWidth / 2;
+            ctx.lineTo(x, canvas.height);
+        }
+        ctx.lineWidth = lineWidth;
+        ctx.strokeStyle = 'red';
+        ctx.stroke();
+    </script>
+</body>
+</html>
