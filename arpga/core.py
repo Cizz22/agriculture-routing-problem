@@ -142,7 +142,7 @@ def new_generation(population, fitness, pSize):
             mother = population[indexm, :]
             
             if np.all(father == 0) or np.all(mother == 0):
-                # stop the loop if both are empty
+                # continue the loop if both are empty
                 continue
 
             offspring = mate(father, mother)

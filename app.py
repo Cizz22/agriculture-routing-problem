@@ -3,10 +3,9 @@
 
 from arpga.core import run_arpga
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 from arpga.model import Arp
 
-app = FastAPI()
+app = FastAPI(title="ARP Genetic Algorithm", version="1.0.0")
 
 
 @app.get("/")
@@ -41,3 +40,5 @@ async def run_arp(arp: Arp):
             "best_solution": best_solution.tolist()
         },
     }
+    
+
