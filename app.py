@@ -38,7 +38,7 @@ async def run_arp(arp: Arp):
         "data": {
             "best_fitness": best_fitness,
             "best_solution": best_solution.tolist(),
-            "best_turns": best_turns.tolist()
+            "best_turns": best_turns
         },
     }
     
