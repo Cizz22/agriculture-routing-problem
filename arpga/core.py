@@ -227,6 +227,6 @@ def run_arpga(track, width, radius, maxGen, pSize, runNumbers):
     # Get the best fitness and solution from all runs
     best_fitness_all = np.min(best_fitness)
     best_solution_all = best_solution[np.argmin(best_fitness), :]
-    best_turns = get_turns(best_solution_all)
+    best_turns = get_turns(best_solution_all, radius, width)
 
     return best_fitness_all, best_solution_all, best_turns
