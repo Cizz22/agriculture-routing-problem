@@ -20,6 +20,7 @@ def fitness(chromosome, radius, width):
     cons = 1
     j = 1
     c = 0
+    turns = []
 
     # Condition that rmin > width/2
     if radius > (width/2):
@@ -31,9 +32,11 @@ def fitness(chromosome, radius, width):
 
         if np.any(turn >= cons):
             # U-turn
+            
             c += (math.pi - 2) * radius + width * turn
         else:
             # Omega-turn
+            
             c += radius * (3 * math.pi - 4 *
                            math.asin((2 * radius + width * turn)/(4 * radius)))
 
@@ -45,6 +48,26 @@ def fitness(chromosome, radius, width):
 
     return c
 
+def get_turns(chromosome, radius, width):
+    cons = 1
+    turns = []
+
+    # Condition that rmin > width/2
+    if radius > (width/2):
+        cons = (2*radius)/width
+
+    # Calculate total distance for each track segment
+    for i in range(len(chromosome)-1):
+        turn = abs(chromosome[i] - chromosome[i+1])
+
+        if np.any(turn >= cons):
+            # U-turn
+            turns.append(0)
+        else:
+            # Omega-turn
+            turns.append(1)
+
+    return turns
 
 def mate(father, mother):
     '''Crossover'''
@@ -204,5 +227,6 @@ def run_arpga(track, width, radius, maxGen, pSize, runNumbers):
     # Get the best fitness and solution from all runs
     best_fitness_all = np.min(best_fitness)
     best_solution_all = best_solution[np.argmin(best_fitness), :]
+    best_turns = get_turns(best_solution_all)
 
-    return best_fitness_all, best_solution_all
+    return best_fitness_all, best_solution_all, best_turns

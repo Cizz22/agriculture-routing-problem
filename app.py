@@ -23,7 +23,7 @@ async def run_arp(arp: Arp):
     maxGen = 40* arp.track
     pSize = 20 * arp.track
 
-    best_fitness, best_solution = run_arpga(
+    best_fitness, best_solution, best_turns = run_arpga(
         track=arp.track,
         width=arp.width,
         radius=arp.radius,
@@ -37,7 +37,8 @@ async def run_arp(arp: Arp):
         "message": "ARP Genetic Algorithm has been run successfully.",
         "data": {
             "best_fitness": best_fitness,
-            "best_solution": best_solution.tolist()
+            "best_solution": best_solution.tolist(),
+            "best_turns": best_turns.tolist()
         },
     }
     
