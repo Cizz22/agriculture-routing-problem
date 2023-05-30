@@ -41,10 +41,10 @@ def fitness(chromosome, radius, width):
                            math.asin((2 * radius + width * turn)/(4 * radius)))
 
     # Add Penalty if first track(start point) and last track(end point) are not in first and second track respectively
-    if np.any(chromosome[0] != 0):
-        c += 50
-    elif np.any(chromosome[len(chromosome)-1] != 1):
-        c += 50
+    # if np.any(chromosome[0] != 0):
+    #     c += 50
+    # elif np.any(chromosome[len(chromosome)-1] != 1):
+    #     c += 50
 
     return c
 
